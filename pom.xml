@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>books-database</artifactId>
+	<artifactId>book-shop-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>books-database</name>
+	<name>book-shop-service</name>
 	<description>Homework project</description>
 	<properties>
 		<java.version>11</java.version>
@@ -35,6 +35,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.persistence</groupId>
+			<artifactId>jakarta.persistence-api</artifactId>
+			<version>2.2.3</version>
 		</dependency>
 	</dependencies>
 

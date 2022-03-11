@@ -1,4 +1,4 @@
-package com.example.booksdatabase;
+package com.example.bookshopservice;
 
 import javax.persistence.Id;
 import javax.persistence.Entity;
@@ -51,7 +51,5 @@ public class Book {
         return publisher;
     }
 
-    public void setPublisherId(Publisher publisher) {
-        this.publisher = publisher;
-    }
+    public void setPublisherId(Publisher publisher) { this.publisher = publisher; }
 }
