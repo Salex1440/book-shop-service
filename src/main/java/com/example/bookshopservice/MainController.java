@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 
 @Controller
 @RequestMapping(path = "/bookshop")
@@ -81,9 +83,14 @@ public class MainController {
     }
 
     @GetMapping(path = "/get_all_books")
-    public @ResponseBody Iterable<Book> getAllBooks()
+    public @ResponseBody Iterable<String> getAllBooks()
     {
-        return bookRepository.findAll();
+        Iterable<Book> books = bookRepository.findAll();
+        List<String> names = new ArrayList<>();
+        for (Book book : books) {
+            names.add(book.getName());
+        }
+        return names;
     }
 
     @GetMapping(path = "/get_all_authors")

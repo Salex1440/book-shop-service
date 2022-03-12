@@ -1,6 +1,6 @@
 package com.example.bookshopservice;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Id;
 import javax.persistence.Entity;
@@ -16,7 +16,7 @@ public class Publisher {
     private String name;
 
     @OneToMany(mappedBy = "publisher")
-    private List<Book> books;
+    private Set<Book> books;
 
     public Integer getId() {
         return id;
@@ -34,11 +34,11 @@ public class Publisher {
         this.name = name;
     }
 
-    public List<Book> getBooks() {
+    public Set<Book> getBooks() {
         return books;
     }
 
-    public void setBooks(List<Book> books) {
+    public void setBooks(Set<Book> books) {
         this.books = books;
     }
 }
