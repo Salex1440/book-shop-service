@@ -33,7 +33,6 @@ public class MainController {
         nb.setAuthorId(author);
         Publisher publisher = publisherRepository.findPublisherByName(publisherName);
         nb.setPublisherId(publisher);
-        String template = "Book: %s; Author: %s; Publisher: %s;";
         String aName, pName;
         if (author == null) {
             aName = "null";
@@ -46,6 +45,7 @@ public class MainController {
             pName = publisher.getName();
         }
         bookRepository.save(nb);
+        String template = "Book: %s; Author: %s; Publisher: %s;";
         String message = String.format(template, bookName, aName, pName);
         return message;
     }
@@ -55,10 +55,14 @@ public class MainController {
     {
         // @ResponseBody means the returned String is the response, not a view name.
         // @RequestParam means it is a parameter from the GET or POST request.
-        Author na = new Author();
+        Author na = authorRepository.findAuthorByName(authorName);
+        if (na != null) {
+            return String.format("Author \"%s\" exists!", authorName);
+        }
+        na = new Author();
         na.setName(authorName);
         authorRepository.save(na);
-        return "Author added.";
+        return String.format("Author %s added.", authorName);
     }
 
     @PostMapping(path = "/add_publisher")
@@ -66,10 +70,14 @@ public class MainController {
     {
         // @ResponseBody means the returned String is the response, not a view name.
         // @RequestParam means it is a parameter from the GET or POST request.
-        Publisher np = new Publisher();
+        Publisher np = publisherRepository.findPublisherByName(publisherName);
+        if (np != null) {
+            return String.format("Publiser \"%s\" exists!", publisherName);
+        }
+        np = new Publisher();
         np.setName(publisherName);
         publisherRepository.save(np);
-        return "Author added.";
+        return String.format("Publisher \"%s\" added.", publisherName);
     }
 
     @GetMapping(path = "/get_all_books")
