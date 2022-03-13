@@ -94,15 +94,25 @@ public class MainController {
     }
 
     @GetMapping(path = "/get_all_authors")
-    public @ResponseBody Iterable<Author> getAllAuthors()
+    public @ResponseBody Iterable<String> getAllAuthors()
     {
-        return authorRepository.findAll();
+        Iterable<Author> authors = authorRepository.findAll();
+        List<String> names = new ArrayList<>();
+        for (Author a : authors) {
+            names.add(a.getName());
+        }
+        return names;
     }
 
     @GetMapping(path = "/get_all_publishers")
-    public @ResponseBody Iterable<Publisher> getAllPublishers()
+    public @ResponseBody Iterable<String> getAllPublishers()
     {
-        return publisherRepository.findAll();
+        Iterable<Publisher> publishers = publisherRepository.findAll();
+        List<String> names = new ArrayList<>();
+        for (Publisher p : publishers) {
+            names.add(p.getName());
+        }
+        return names;
     }
 
     @DeleteMapping(path = "/delete_book")
