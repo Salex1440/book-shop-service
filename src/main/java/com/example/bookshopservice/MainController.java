@@ -48,8 +48,7 @@ public class MainController {
         }
         bookRepository.save(nb);
         String template = "Book: %s; Author: %s; Publisher: %s;";
-        String message = String.format(template, bookName, aName, pName);
-        return message;
+        return String.format(template, bookName, aName, pName);
     }
 
     @PostMapping(path = "/add_author")
@@ -196,10 +195,16 @@ public class MainController {
             return String.format("There is no author with this name: %s", authorName);
         }
         Author prevAuthor = book.getAuthorId();
+        String prevAuthorName;
+        if (prevAuthor == null) {
+            prevAuthorName = "null";
+        } else {
+            prevAuthorName = prevAuthor.getName();
+        }
         book.setAuthorId(author);
         bookRepository.save(book);
         return String.format("Author of book \"%s\" was changed from %s to %s.",
-                bookName, prevAuthor.getName(), author.getName());
+                bookName, prevAuthorName, authorName);
     }
 
     @PutMapping(path= "/change_publisher")
@@ -214,9 +219,15 @@ public class MainController {
             return String.format("There is no publisher with this name: %s", publisherName);
         }
         Publisher prevPublisher = book.getPublisherId();
+        String prevPublisherName;
+        if (prevPublisher == null) {
+            prevPublisherName = "null";
+        } else {
+            prevPublisherName = prevPublisher.getName();
+        }
         book.setPublisherId(publisher);
         bookRepository.save(book);
         return String.format("Publisher of book \"%s\" was changed from %s to %s.",
-                bookName, prevPublisher.getName(), publisher.getName());
+                bookName, prevPublisherName, publisherName);
     }
 }
