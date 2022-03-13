@@ -115,6 +115,34 @@ public class MainController {
         return names;
     }
 
+    @GetMapping(path = "/get_books_by_author")
+    public @ResponseBody Iterable<String> getBooksByAuthor(@RequestParam String name){
+        List<String> names = new ArrayList<>();
+        Author author = authorRepository.findAuthorByName(name);
+        if (author == null) {
+            return names;
+        }
+        Iterable<Book> books = author.getBooks();
+        for (Book b : books) {
+            names.add(b.getName());
+        }
+        return names;
+    }
+
+    @GetMapping(path = "/get_books_by_publisher")
+    public @ResponseBody Iterable<String> getBooksByPublisher(@RequestParam String name){
+        List<String> names = new ArrayList<>();
+        Publisher publisher = publisherRepository.findPublisherByName(name);
+        if (publisher == null) {
+            return names;
+        }
+        Iterable<Book> books = publisher.getBooks();
+        for (Book b : books) {
+            names.add(b.getName());
+        }
+        return names;
+    }
+
     @DeleteMapping(path = "/delete_book")
     public @ResponseBody String deleteBook(@RequestParam String name)
     {
@@ -133,7 +161,12 @@ public class MainController {
         if (author == null) {
             return String.format("Author %s doesn't exist!", name);
         }
+        Iterable<Book> books = author.getBooks();
+        for (Book b : books) {
+            b.setAuthorId(null);
+        }
         authorRepository.delete(author);
+
         return String.format("Author \"%s\" was deleted.", name);
     }
 
@@ -142,6 +175,10 @@ public class MainController {
         Publisher publisher= publisherRepository.findPublisherByName(name);
         if (publisher == null) {
             return String.format("Publisher %s doesn't exist!", name);
+        }
+        Iterable<Book> books = publisher.getBooks();
+        for (Book b : books) {
+            b.setPublisherId(null);
         }
         publisherRepository.delete(publisher);
         return String.format("Publisher \"%s\" was deleted.", name);
