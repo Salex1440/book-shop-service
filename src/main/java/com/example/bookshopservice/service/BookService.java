@@ -3,7 +3,6 @@ package com.example.bookshopservice.service;
 import com.example.bookshopservice.exception.NotFoundException;
 import com.example.bookshopservice.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -40,6 +39,14 @@ public class BookService {
             throw new NotFoundException("Author not found!");
         }
         book.setAuthor(author);
+    }
+
+    public void deleteBook(String bookName) {
+        Book book = bookRepository.findBookByName(bookName);
+        if (book == null) {
+            throw new NotFoundException("Book not found!");
+        }
+        bookRepository.delete(book);
     }
 
 }

@@ -4,9 +4,9 @@ import com.example.bookshopservice.dto.AuthorDto;
 import com.example.bookshopservice.dto.BookDto;
 import com.example.bookshopservice.dto.PublisherDto;
 import com.example.bookshopservice.repository.*;
+import com.example.bookshopservice.service.AuthorService;
 import com.example.bookshopservice.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +28,9 @@ public class MainController {
 
     @Autowired
     BookService bookService;
+
+    @Autowired
+    AuthorService authorService;
 
     @PostMapping(path = "/add_book")
     public @ResponseBody String addBook(@RequestParam String bookName,
@@ -146,28 +149,15 @@ public class MainController {
     @DeleteMapping(path = "/delete_book")
     public @ResponseBody String deleteBook(@RequestParam String name)
     {
-        Book book = bookRepository.findBookByName(name);
-        if (book == null) {
-            return String.format("Book %s doesn't exist!", name);
-        }
-        bookRepository.delete(book);
-        return String.format("Book \"%s\" was deleted.", name);
+        bookService.deleteBook(name);
+        return "OK";
     }
 
     @DeleteMapping(path = "/delete_author")
     public @ResponseBody String deleteAuthor(@RequestParam String name)
     {
-        Author author = authorRepository.findAuthorByName(name);
-        if (author == null) {
-            return String.format("Author %s doesn't exist!", name);
-        }
-        Iterable<Book> books = author.getBooks();
-        for (Book b : books) {
-            b.setAuthor(null);
-        }
-        authorRepository.delete(author);
-
-        return String.format("Author \"%s\" was deleted.", name);
+        authorService.deleteAuthor(name);
+        return "OK";
     }
 
     @DeleteMapping(path = "/delete_publisher")
