@@ -1,6 +1,7 @@
 package com.example.bookshopservice.service;
 
 import com.example.bookshopservice.exception.NotFoundException;
+import com.example.bookshopservice.exception.ObjectExistsException;
 import com.example.bookshopservice.repository.Book;
 import com.example.bookshopservice.repository.BookRepository;
 import com.example.bookshopservice.repository.Publisher;
@@ -15,6 +16,16 @@ public class PublisherService {
 
     @Autowired
     private BookRepository bookRepository;
+
+    public void addPublisher(String name) {
+        Publisher np = publisherRepository.findPublisherByName(name);
+        if (np != null) {
+            throw new ObjectExistsException("Publisher already exists!");
+        }
+        np = new Publisher();
+        np.setName(name);
+        publisherRepository.save(np);
+    }
 
     public void deletePublisher(String name) {
         Publisher publisher= publisherRepository.findPublisherByName(name);

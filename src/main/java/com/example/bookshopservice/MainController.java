@@ -42,30 +42,8 @@ public class MainController {
                                         @RequestParam String authorName,
                                         @RequestParam String publisherName)
     {
-        Book nb = bookRepository.findBookByName(bookName);
-        if (nb != null) {
-            return String.format("Book \"%s\" exists!", bookName);
-        }
-        nb = new Book();
-        nb.setName(bookName);
-        Author author = authorRepository.findAuthorByName(authorName);
-        nb.setAuthor(author);
-        Publisher publisher = publisherRepository.findPublisherByName(publisherName);
-        nb.setPublisher(publisher);
-        String aName, pName;
-        if (author == null) {
-            aName = "null";
-        } else {
-            aName = author.getName();
-        }
-        if (publisher == null) {
-            pName = "null";
-        } else {
-            pName = publisher.getName();
-        }
-        bookRepository.save(nb);
-        String template = "Book: %s; Author: %s; Publisher: %s;";
-        return String.format(template, bookName, aName, pName);
+        bookService.addBook(bookName, authorName, publisherName);
+        return "OK";
     }
 
     @PostMapping(path = "/add_author")
@@ -78,16 +56,8 @@ public class MainController {
     @PostMapping(path = "/add_publisher")
     public @ResponseBody String addPublisher(@RequestParam String publisherName)
     {
-        // @ResponseBody means the returned String is the response, not a view name.
-        // @RequestParam means it is a parameter from the GET or POST request.
-        Publisher np = publisherRepository.findPublisherByName(publisherName);
-        if (np != null) {
-            return String.format("Publiser \"%s\" exists!", publisherName);
-        }
-        np = new Publisher();
-        np.setName(publisherName);
-        publisherRepository.save(np);
-        return String.format("Publisher \"%s\" added.", publisherName);
+        publisherService.addPublisher(publisherName);
+        return "OK";
     }
 
     @GetMapping(path = "/get_all_books")
@@ -115,31 +85,13 @@ public class MainController {
     }
 
     @GetMapping(path = "/get_books_by_author")
-    public @ResponseBody Iterable<String> getBooksByAuthor(@RequestParam String name){
-        List<String> names = new ArrayList<>();
-        Author author = authorRepository.findAuthorByName(name);
-        if (author == null) {
-            return names;
-        }
-        Iterable<Book> books = author.getBooks();
-        for (Book b : books) {
-            names.add(b.getName());
-        }
-        return names;
+    public @ResponseBody Iterable<BookDto> getBooksByAuthor(@RequestParam String name){
+        return bookService.getBooksByAuthor(name);
     }
 
     @GetMapping(path = "/get_books_by_publisher")
-    public @ResponseBody Iterable<String> getBooksByPublisher(@RequestParam String name){
-        List<String> names = new ArrayList<>();
-        Publisher publisher = publisherRepository.findPublisherByName(name);
-        if (publisher == null) {
-            return names;
-        }
-        Iterable<Book> books = publisher.getBooks();
-        for (Book b : books) {
-            names.add(b.getName());
-        }
-        return names;
+    public @ResponseBody Iterable<BookDto> getBooksByPublisher(@RequestParam String name){
+        return bookService.getBooksByPublisher(name);
     }
 
     @DeleteMapping(path = "/delete_book")
