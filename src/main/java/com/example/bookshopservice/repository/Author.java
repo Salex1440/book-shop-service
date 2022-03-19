@@ -1,4 +1,4 @@
-package com.example.bookshopservice;
+package com.example.bookshopservice.repository;
 
 import java.util.Set;
 

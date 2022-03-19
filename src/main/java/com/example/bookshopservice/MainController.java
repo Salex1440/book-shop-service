@@ -1,12 +1,18 @@
 package com.example.bookshopservice;
 
+import com.example.bookshopservice.dto.AuthorDto;
+import com.example.bookshopservice.dto.BookDto;
+import com.example.bookshopservice.dto.PublisherDto;
+import com.example.bookshopservice.repository.*;
+import com.example.bookshopservice.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 @Controller
 @RequestMapping(path = "/bookshop")
@@ -20,6 +26,9 @@ public class MainController {
     @Autowired
     private PublisherRepository publisherRepository;
 
+    @Autowired
+    BookService bookService;
+
     @PostMapping(path = "/add_book")
     public @ResponseBody String addBook(@RequestParam String bookName,
                                         @RequestParam String authorName,
@@ -32,9 +41,9 @@ public class MainController {
         nb = new Book();
         nb.setName(bookName);
         Author author = authorRepository.findAuthorByName(authorName);
-        nb.setAuthorId(author);
+        nb.setAuthor(author);
         Publisher publisher = publisherRepository.findPublisherByName(publisherName);
-        nb.setPublisherId(publisher);
+        nb.setPublisher(publisher);
         String aName, pName;
         if (author == null) {
             aName = "null";
@@ -82,36 +91,27 @@ public class MainController {
     }
 
     @GetMapping(path = "/get_all_books")
-    public @ResponseBody Iterable<String> getAllBooks()
+    public @ResponseBody Iterable<BookDto> getAllBooks()
     {
-        Iterable<Book> books = bookRepository.findAll();
-        List<String> names = new ArrayList<>();
-        for (Book book : books) {
-            names.add(book.getName());
-        }
-        return names;
+        List<BookDto> bookDtoList = new ArrayList<>();
+        bookRepository.findAll().forEach(book -> bookDtoList.add(new BookDto(book)));
+        return bookDtoList;
     }
 
     @GetMapping(path = "/get_all_authors")
-    public @ResponseBody Iterable<String> getAllAuthors()
+    public @ResponseBody Iterable<AuthorDto> getAllAuthors()
     {
-        Iterable<Author> authors = authorRepository.findAll();
-        List<String> names = new ArrayList<>();
-        for (Author a : authors) {
-            names.add(a.getName());
-        }
-        return names;
+        List<AuthorDto> authorDtoList = new ArrayList<>();
+        authorRepository.findAll().forEach(author -> authorDtoList.add(new AuthorDto(author)));
+        return authorDtoList;
     }
 
     @GetMapping(path = "/get_all_publishers")
-    public @ResponseBody Iterable<String> getAllPublishers()
+    public @ResponseBody Iterable<PublisherDto> getAllPublishers()
     {
-        Iterable<Publisher> publishers = publisherRepository.findAll();
-        List<String> names = new ArrayList<>();
-        for (Publisher p : publishers) {
-            names.add(p.getName());
-        }
-        return names;
+        List<PublisherDto> publisherDtoList = new ArrayList<>();
+        publisherRepository.findAll().forEach((publisher -> publisherDtoList.add(new PublisherDto(publisher))));
+        return publisherDtoList;
     }
 
     @GetMapping(path = "/get_books_by_author")
@@ -139,6 +139,7 @@ public class MainController {
         for (Book b : books) {
             names.add(b.getName());
         }
+
         return names;
     }
 
@@ -162,7 +163,7 @@ public class MainController {
         }
         Iterable<Book> books = author.getBooks();
         for (Book b : books) {
-            b.setAuthorId(null);
+            b.setAuthor(null);
         }
         authorRepository.delete(author);
 
@@ -177,7 +178,7 @@ public class MainController {
         }
         Iterable<Book> books = publisher.getBooks();
         for (Book b : books) {
-            b.setPublisherId(null);
+            b.setPublisher(null);
         }
         publisherRepository.delete(publisher);
         return String.format("Publisher \"%s\" was deleted.", name);
@@ -194,14 +195,14 @@ public class MainController {
         if (author == null) {
             return String.format("There is no author with this name: %s", authorName);
         }
-        Author prevAuthor = book.getAuthorId();
+        Author prevAuthor = book.getAuthor();
         String prevAuthorName;
         if (prevAuthor == null) {
             prevAuthorName = "null";
         } else {
             prevAuthorName = prevAuthor.getName();
         }
-        book.setAuthorId(author);
+        book.setAuthor(author);
         bookRepository.save(book);
         return String.format("Author of book \"%s\" was changed from %s to %s.",
                 bookName, prevAuthorName, authorName);
@@ -210,24 +211,10 @@ public class MainController {
     @PutMapping(path= "/change_publisher")
     public @ResponseBody String changePublisher(@RequestParam String bookName,
                                              @RequestParam String publisherName) {
-        Book book = bookRepository.findBookByName(bookName);
-        if (book == null) {
-            return String.format("There is no book with this name: %s.", bookName);
-        }
-        Publisher publisher = publisherRepository.findPublisherByName(publisherName);
-        if (publisher == null) {
-            return String.format("There is no publisher with this name: %s", publisherName);
-        }
-        Publisher prevPublisher = book.getPublisherId();
-        String prevPublisherName;
-        if (prevPublisher == null) {
-            prevPublisherName = "null";
-        } else {
-            prevPublisherName = prevPublisher.getName();
-        }
-        book.setPublisherId(publisher);
-        bookRepository.save(book);
+        Pair<Book, Book> pb = bookService.changePublisher(bookName, publisherName);
+        Book prevBook = pb.getFirst();
+        Book currBook = pb.getSecond();
         return String.format("Publisher of book \"%s\" was changed from %s to %s.",
-                bookName, prevPublisherName, publisherName);
+                bookName, prevBook.getPublisher().getName(), currBook.getPublisher().getName());
     }
 }

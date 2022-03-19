@@ -1,4 +1,4 @@
-package com.example.bookshopservice;
+package com.example.bookshopservice.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
