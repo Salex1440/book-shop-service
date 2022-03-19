@@ -187,33 +187,19 @@ public class MainController {
     @PutMapping(path= "/change_author")
     public @ResponseBody String changeAuthor(@RequestParam String bookName,
                                              @RequestParam String authorName) {
-        Book book = bookRepository.findBookByName(bookName);
-        if (book == null) {
-            return String.format("There is no book with this name: %s.", bookName);
-        }
-        Author author = authorRepository.findAuthorByName(authorName);
-        if (author == null) {
-            return String.format("There is no author with this name: %s", authorName);
-        }
-        Author prevAuthor = book.getAuthor();
-        String prevAuthorName;
-        if (prevAuthor == null) {
-            prevAuthorName = "null";
-        } else {
-            prevAuthorName = prevAuthor.getName();
-        }
-        book.setAuthor(author);
-        bookRepository.save(book);
+        Pair<Book, Book> pb =bookService.changeAuthor(bookName, authorName);
+        Book currBook = pb.getFirst();
+        Book prevBook = pb.getSecond();
         return String.format("Author of book \"%s\" was changed from %s to %s.",
-                bookName, prevAuthorName, authorName);
+                bookName, prevBook.getAuthor().getName(), currBook.getAuthor().getName());
     }
 
     @PutMapping(path= "/change_publisher")
     public @ResponseBody String changePublisher(@RequestParam String bookName,
                                              @RequestParam String publisherName) {
         Pair<Book, Book> pb = bookService.changePublisher(bookName, publisherName);
-        Book prevBook = pb.getFirst();
-        Book currBook = pb.getSecond();
+        Book currBook = pb.getFirst();
+        Book prevBook = pb.getSecond();
         return String.format("Publisher of book \"%s\" was changed from %s to %s.",
                 bookName, prevBook.getPublisher().getName(), currBook.getPublisher().getName());
     }
