@@ -71,11 +71,7 @@ public class MainController {
     public @ResponseBody Iterable<AuthorDto> getAllAuthors()
     {
         List<AuthorDto> authorDtoList = new ArrayList<>();
-        Iterable<Author> authorList = authorRepository.findAll();
-        for (Author a: authorList) {
-            authorDtoList.add(new AuthorDto(a));
-        }
-        // authorRepository.findAll().forEach(author -> authorDtoList.add(new AuthorDto(author)));
+        authorRepository.findAll().forEach(author -> authorDtoList.add(new AuthorDto(author)));
         return authorDtoList;
     }
 
