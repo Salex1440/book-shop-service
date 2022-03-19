@@ -3,7 +3,6 @@ package com.example.bookshopservice;
 import com.example.bookshopservice.dto.AuthorDto;
 import com.example.bookshopservice.dto.BookDto;
 import com.example.bookshopservice.dto.PublisherDto;
-import com.example.bookshopservice.exception.ObjectExistsException;
 import com.example.bookshopservice.repository.*;
 import com.example.bookshopservice.service.AuthorService;
 import com.example.bookshopservice.service.BookService;
@@ -72,7 +71,11 @@ public class MainController {
     public @ResponseBody Iterable<AuthorDto> getAllAuthors()
     {
         List<AuthorDto> authorDtoList = new ArrayList<>();
-        authorRepository.findAll().forEach(author -> authorDtoList.add(new AuthorDto(author)));
+        Iterable<Author> authorList = authorRepository.findAll();
+        for (Author a: authorList) {
+            authorDtoList.add(new AuthorDto(a));
+        }
+        // authorRepository.findAll().forEach(author -> authorDtoList.add(new AuthorDto(author)));
         return authorDtoList;
     }
 
