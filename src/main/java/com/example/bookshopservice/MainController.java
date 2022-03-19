@@ -3,9 +3,11 @@ package com.example.bookshopservice;
 import com.example.bookshopservice.dto.AuthorDto;
 import com.example.bookshopservice.dto.BookDto;
 import com.example.bookshopservice.dto.PublisherDto;
+import com.example.bookshopservice.exception.ObjectExistsException;
 import com.example.bookshopservice.repository.*;
 import com.example.bookshopservice.service.AuthorService;
 import com.example.bookshopservice.service.BookService;
+import com.example.bookshopservice.service.PublisherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -27,10 +29,13 @@ public class MainController {
     private PublisherRepository publisherRepository;
 
     @Autowired
-    BookService bookService;
+    private BookService bookService;
 
     @Autowired
-    AuthorService authorService;
+    private AuthorService authorService;
+
+    @Autowired
+    private PublisherService publisherService;
 
     @PostMapping(path = "/add_book")
     public @ResponseBody String addBook(@RequestParam String bookName,
@@ -66,16 +71,8 @@ public class MainController {
     @PostMapping(path = "/add_author")
     public @ResponseBody String addAuthor(@RequestParam String authorName)
     {
-        // @ResponseBody means the returned String is the response, not a view name.
-        // @RequestParam means it is a parameter from the GET or POST request.
-        Author na = authorRepository.findAuthorByName(authorName);
-        if (na != null) {
-            return String.format("Author \"%s\" exists!", authorName);
-        }
-        na = new Author();
-        na.setName(authorName);
-        authorRepository.save(na);
-        return String.format("Author %s added.", authorName);
+        authorService.addAuthor(authorName);
+        return "OK";
     }
 
     @PostMapping(path = "/add_publisher")
@@ -142,7 +139,6 @@ public class MainController {
         for (Book b : books) {
             names.add(b.getName());
         }
-
         return names;
     }
 
@@ -162,16 +158,8 @@ public class MainController {
 
     @DeleteMapping(path = "/delete_publisher")
     public @ResponseBody String deletePublisher(@RequestParam String name) {
-        Publisher publisher= publisherRepository.findPublisherByName(name);
-        if (publisher == null) {
-            return String.format("Publisher %s doesn't exist!", name);
-        }
-        Iterable<Book> books = publisher.getBooks();
-        for (Book b : books) {
-            b.setPublisher(null);
-        }
-        publisherRepository.delete(publisher);
-        return String.format("Publisher \"%s\" was deleted.", name);
+        publisherService.deletePublisher(name);
+        return "OK";
     }
 
     @PutMapping(path= "/change_author")
