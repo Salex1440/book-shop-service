@@ -17,7 +17,7 @@ public class BookService {
     @Autowired
     private PublisherRepository publisherRepository;
 
-    public Pair<Book, Book> changePublisher(String bookName, String publisherName) {
+    public void changePublisher(String bookName, String publisherName) {
 
         Book book = bookRepository.findBookByName(bookName);
         if (book == null) {
@@ -28,12 +28,9 @@ public class BookService {
             throw new NotFoundException("Publisher not found!");
         }
         book.setPublisher(publisher);
-        Book nbook = bookRepository.save(book);
-
-        return Pair.of(nbook, book);
     }
 
-    public Pair<Book, Book> changeAuthor(String bookName, String authorName) {
+    public void changeAuthor(String bookName, String authorName) {
         Book book = bookRepository.findBookByName(bookName);
         if (book == null) {
             throw new NotFoundException("Book not found!");
@@ -43,8 +40,6 @@ public class BookService {
             throw new NotFoundException("Author not found!");
         }
         book.setAuthor(author);
-        Book nbook = bookRepository.save(book);
-        return Pair.of(nbook, book);
     }
 
 }

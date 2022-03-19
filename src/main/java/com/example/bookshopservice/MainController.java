@@ -187,20 +187,14 @@ public class MainController {
     @PutMapping(path= "/change_author")
     public @ResponseBody String changeAuthor(@RequestParam String bookName,
                                              @RequestParam String authorName) {
-        Pair<Book, Book> pb =bookService.changeAuthor(bookName, authorName);
-        Book currBook = pb.getFirst();
-        Book prevBook = pb.getSecond();
-        return String.format("Author of book \"%s\" was changed from %s to %s.",
-                bookName, prevBook.getAuthor().getName(), currBook.getAuthor().getName());
+        bookService.changeAuthor(bookName, authorName);
+        return "OK";
     }
 
     @PutMapping(path= "/change_publisher")
     public @ResponseBody String changePublisher(@RequestParam String bookName,
                                              @RequestParam String publisherName) {
-        Pair<Book, Book> pb = bookService.changePublisher(bookName, publisherName);
-        Book currBook = pb.getFirst();
-        Book prevBook = pb.getSecond();
-        return String.format("Publisher of book \"%s\" was changed from %s to %s.",
-                bookName, prevBook.getPublisher().getName(), currBook.getPublisher().getName());
+        bookService.changePublisher(bookName, publisherName);
+        return "OK";
     }
 }
