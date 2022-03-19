@@ -67,6 +67,7 @@ public class BookService {
             throw new NotFoundException("Publisher not found!");
         }
         book.setPublisher(publisher);
+        bookRepository.save(book);
     }
 
     public void changeAuthor(String bookName, String authorName) {
@@ -79,6 +80,7 @@ public class BookService {
             throw new NotFoundException("Author not found!");
         }
         book.setAuthor(author);
+        bookRepository.save(book);
     }
 
     public void deleteBook(String bookName) {
