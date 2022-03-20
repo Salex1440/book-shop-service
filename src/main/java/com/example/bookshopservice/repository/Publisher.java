@@ -7,8 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.OneToMany;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
-public class Publisher {
+public @Getter @Setter class Publisher {
     @Id
     @GeneratedValue
     private Integer id;
