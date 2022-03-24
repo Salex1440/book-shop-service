@@ -59,7 +59,7 @@ public class MainController {
         return "OK";
     }
 
-    @GetMapping(path = "/get_all_books")
+    @GetMapping(path = "/books")
     public @ResponseBody Iterable<BookDto> getAllBooks()
     {
         List<BookDto> bookDtoList = new ArrayList<>();
@@ -83,44 +83,49 @@ public class MainController {
         return publisherDtoList;
     }
 
-    @GetMapping(path = "/get_books_by_author")
+    @GetMapping(path = "/books/author/{id}")
+    public @ResponseBody Iterable<BookDto> getBooksByAuthor(@PathVariable int id){
+        return bookService.getBooksByAuthor(id);
+    }
+
+    @GetMapping(path = "/books/author")
     public @ResponseBody Iterable<BookDto> getBooksByAuthor(@RequestParam String name){
         return bookService.getBooksByAuthor(name);
     }
 
-    @GetMapping(path = "/get_books_by_publisher")
+    @GetMapping(path = "/books/publisher/{id}")
     public @ResponseBody Iterable<BookDto> getBooksByPublisher(@RequestParam String name){
         return bookService.getBooksByPublisher(name);
     }
 
-    @DeleteMapping(path = "/delete_book")
+    @DeleteMapping(path = "/delete_book") //+
     public @ResponseBody String deleteBook(@RequestParam String name)
     {
         bookService.deleteBook(name);
         return "OK";
     }
 
-    @DeleteMapping(path = "/delete_author")
+    @DeleteMapping(path = "/author/{id}")
     public @ResponseBody String deleteAuthor(@RequestParam String name)
     {
         authorService.deleteAuthor(name);
         return "OK";
     }
 
-    @DeleteMapping(path = "/delete_publisher")
-    public @ResponseBody String deletePublisher(@RequestParam String name) {
-        publisherService.deletePublisher(name);
+    @DeleteMapping(path = "/publisher/{id}")
+    public @ResponseBody String deletePublisher(@PathVariable int id) {
+        publisherService.deletePublisher(id);
         return "OK";
     }
 
-    @PutMapping(path= "/change_author")
+    @PutMapping(path= "/author/{id}")
     public @ResponseBody String changeAuthor(@RequestParam String bookName,
                                              @RequestParam String authorName) {
         bookService.changeAuthor(bookName, authorName);
         return "OK";
     }
 
-    @PutMapping(path= "/change_publisher")
+    @PutMapping(path= "/publisher/{id}")
     public @ResponseBody String changePublisher(@RequestParam String bookName,
                                              @RequestParam String publisherName) {
         bookService.changePublisher(bookName, publisherName);

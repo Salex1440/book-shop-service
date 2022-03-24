@@ -8,9 +8,12 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 @Entity
-public @Getter @Setter class Author {
+@Setter
+@Getter
+public class Author {
     @Id
     @GeneratedValue
     private Integer id;
