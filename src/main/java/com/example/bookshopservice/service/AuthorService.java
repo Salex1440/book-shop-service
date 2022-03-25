@@ -23,6 +23,18 @@ public class AuthorService {
         authorRepository.save(na);
     }
 
+    public void deleteAuthor(int id) {
+        Author author = authorRepository.findAuthorById(id);
+        if (author == null) {
+            throw new NotFoundException("Author not found!");
+        }
+        Iterable<Book> books = author.getBooks();
+        for (Book b : books) {
+            b.setAuthor(null);
+        }
+        authorRepository.delete(author);
+    }
+
     public void deleteAuthor(String name) {
         Author author = authorRepository.findAuthorByName(name);
         if (author == null) {

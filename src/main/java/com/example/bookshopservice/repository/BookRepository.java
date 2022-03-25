@@ -6,6 +6,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface BookRepository extends CrudRepository <Book, Integer> {
 
+    @Query("SELECT b FROM Book b WHERE b.id= :id")
+    Book findBookById(@Param("id") int id);
+
     @Query("SELECT b FROM Book b WHERE b.name= :name")
     Book findBookByName(@Param("name") String name);
 

@@ -37,6 +37,16 @@ public class BookService {
         bookRepository.save(nb);
     }
 
+    public Iterable<BookDto> getBooksByAuthor(int id) {
+        Author author = authorRepository.findAuthorById(id);
+        if (author == null) {
+            return null;
+        }
+        List<BookDto> bookDtoList = new ArrayList<>();
+        author.getBooks().forEach(book -> bookDtoList.add(new BookDto(book)));
+        return bookDtoList;
+    }
+
     public Iterable<BookDto> getBooksByAuthor(String name) {
         Author author = authorRepository.findAuthorByName(name);
         if (author == null) {
@@ -44,6 +54,16 @@ public class BookService {
         }
         List<BookDto> bookDtoList = new ArrayList<>();
         author.getBooks().forEach(book -> bookDtoList.add(new BookDto(book)));
+        return bookDtoList;
+    }
+
+    public Iterable<BookDto> getBooksByPublisher(int id){
+        Publisher publisher = publisherRepository.findPublisherById(id);
+        if (publisher == null) {
+            return null;
+        }
+        List<BookDto> bookDtoList = new ArrayList<>();
+        publisher.getBooks().forEach(book -> bookDtoList.add(new BookDto(book)));
         return bookDtoList;
     }
 
@@ -55,6 +75,19 @@ public class BookService {
         List<BookDto> bookDtoList = new ArrayList<>();
         publisher.getBooks().forEach(book -> bookDtoList.add(new BookDto(book)));
         return bookDtoList;
+    }
+
+    public void changePublisher(int id, String publisherName) {
+        Book book = bookRepository.findBookById(id);
+        if (book == null) {
+            throw new NotFoundException("Book not found!");
+        }
+        Publisher publisher = publisherRepository.findPublisherByName(publisherName);
+        if (publisher == null) {
+            throw new NotFoundException("Publisher not found!");
+        }
+        book.setPublisher(publisher);
+        bookRepository.save(book);
     }
 
     public void changePublisher(String bookName, String publisherName) {
@@ -70,6 +103,19 @@ public class BookService {
         bookRepository.save(book);
     }
 
+    public void changeAuthor(int id, String authorName) {
+        Book book = bookRepository.findBookById(id);
+        if (book == null) {
+            throw new NotFoundException("Book not found!");
+        }
+        Author author = authorRepository.findAuthorByName(authorName);
+        if (author == null) {
+            throw new NotFoundException("Author not found!");
+        }
+        book.setAuthor(author);
+        bookRepository.save(book);
+    }
+
     public void changeAuthor(String bookName, String authorName) {
         Book book = bookRepository.findBookByName(bookName);
         if (book == null) {
@@ -81,6 +127,14 @@ public class BookService {
         }
         book.setAuthor(author);
         bookRepository.save(book);
+    }
+
+    public void deleteBook(int id) {
+        Book book = bookRepository.findBookById(id);
+        if (book == null) {
+            throw new NotFoundException("Book not found!");
+        }
+        bookRepository.delete(book);
     }
 
     public void deleteBook(String bookName) {

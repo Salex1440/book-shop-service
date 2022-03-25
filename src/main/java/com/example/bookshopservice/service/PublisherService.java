@@ -27,6 +27,18 @@ public class PublisherService {
         publisherRepository.save(np);
     }
 
+    public void deletePublisher(int id) {
+        Publisher publisher= publisherRepository.findPublisherById(id);
+        if (publisher == null) {
+            throw new NotFoundException("Publisher not found!");
+        }
+        Iterable<Book> books = publisher.getBooks();
+        for (Book b : books) {
+            b.setPublisher(null);
+        }
+        publisherRepository.delete(publisher);
+    }
+
     public void deletePublisher(String name) {
         Publisher publisher= publisherRepository.findPublisherByName(name);
         if (publisher == null) {

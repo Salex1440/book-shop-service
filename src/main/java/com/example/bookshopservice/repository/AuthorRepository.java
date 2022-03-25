@@ -6,6 +6,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface AuthorRepository extends CrudRepository<Author, Integer> {
 
+    @Query("SELECT a FROM Author a WHERE a.id= :id")
+    Author findAuthorById(@Param("id") int id);
+
     @Query("SELECT a FROM Author a WHERE a.name= :name")
     Author findAuthorByName(@Param("name") String name);
 }

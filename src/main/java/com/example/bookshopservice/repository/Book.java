@@ -14,7 +14,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity // This tells Hibernate to make a table out of this class.
-public @Getter @Setter class Book {
+@Getter
+@Setter
+public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
