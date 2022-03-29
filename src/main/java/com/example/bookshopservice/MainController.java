@@ -39,7 +39,7 @@ public class MainController {
     @Autowired
     private PublisherService publisherService;
 
-    @PostMapping(path = "/add_book")
+    @PostMapping(path = "/book")
     public @ResponseBody String addBook(@RequestParam String bookName,
                                         @RequestParam String authorName,
                                         @RequestParam String publisherName)
@@ -48,14 +48,14 @@ public class MainController {
         return "OK";
     }
 
-    @PostMapping(path = "/add_author")
+    @PostMapping(path = "/author")
     public @ResponseBody String addAuthor(@RequestParam String authorName)
     {
         authorService.addAuthor(authorName);
         return "OK";
     }
 
-    @PostMapping(path = "/add_publisher")
+    @PostMapping(path = "/publisher")
     public @ResponseBody String addPublisher(@RequestParam String publisherName)
     {
         publisherService.addPublisher(publisherName);
